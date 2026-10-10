@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QualcommPermissive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+  * { box-sizing: border-box; }
+  .ms {
+    font-family: "Material Symbols Outlined"; font-weight: normal; font-style: normal;
+    line-height: 1; display: inline-block; vertical-align: middle;
+    letter-spacing: normal; text-transform: none; white-space: nowrap;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+  :root {
+    --m3-primary: #d0bcff;
+    --m3-on-primary: #381e72;
+    --m3-primary-container: #4f378b;
+    --m3-on-primary-container: #eaddff;
+    --m3-secondary-container: #4a4458;
+    --m3-on-secondary-container: #e8def8;
+    --m3-tertiary-container: #633b48;
+    --m3-on-tertiary-container: #ffd8e4;
+    --m3-surface: #141218;
+    --m3-surface-lowest: #0f0d13;
+    --m3-surface-low: #1d1b20;
+    --m3-surface-container: #211f26;
+    --m3-surface-high: #2b2930;
+    --m3-surface-highest: #36343b;
+    --m3-on-surface: #e6e0e9;
+    --m3-on-surface-variant: #cac4d0;
+    --m3-outline: #938f99;
+    --m3-outline-variant: #49454f;
+    --m3-error: #ffb4ab;
+    --m3-ok: #7dff9b;
+    --m3-hint: #ffe066;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0; overflow: hidden;
+    font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #05070f; color: #e8eaed;
+    user-select: none; -webkit-user-select: none;
+  }
+  /* ---------- lock screen ---------- */
+  #lock {
+    position: fixed; inset: 0; z-index: 10;
+    background:
+      radial-gradient(120% 90% at 85% -10%, rgba(88, 60, 180, 0.55), transparent 55%),
+      radial-gradient(100% 80% at 10% 20%, rgba(38, 52, 140, 0.65), transparent 60%),
+      radial-gradient(90% 70% at 90% 90%, rgba(20, 28, 90, 0.8), transparent 60%),
+      radial-gradient(70% 55% at 20% 95%, rgba(48, 30, 110, 0.5), transparent 60%),
+      linear-gradient(180deg, #0a0f26 0%, #070b1c 55%, #04060f 100%);
+    transition: transform 0.45s ease-in, opacity 0.45s ease-in;
+    touch-action: none;
+  }
+  #lock.unlocking { transform: translateY(-100%); opacity: 0;
+    transition: transform 0.24s cubic-bezier(0.4, 0, 1, 1), opacity 0.24s cubic-bezier(0.4, 0, 1, 1); }
+  #app.peek { pointer-events: none; }
+  #lock.hidden { display: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(2px); opacity: 0.85; }
+  .blob.b1 {
+    width: 130%; height: 46%; left: -25%; top: -12%;
+    background: linear-gradient(160deg, rgba(70, 90, 220, 0.35), rgba(30, 30, 90, 0.1));
+    border-bottom: 2px solid rgba(150, 170, 255, 0.25);
+    transform: rotate(-8deg);
+  }
+  .blob.b2 {
+    width: 120%; height: 60%; right: -45%; bottom: -25%;
+    background: linear-gradient(200deg, rgba(40, 50, 150, 0.4), rgba(10, 12, 40, 0.2));
+    border-top: 2px solid rgba(150, 170, 255, 0.28);
+    border-left: 2px solid rgba(150, 170, 255, 0.12);
+    transform: rotate(12deg);
+  }
+  .blob.b3 {
+    width: 45%; height: 30%; left: 55%; top: 30%;
+    background: radial-gradient(closest-side, rgba(90, 80, 200, 0.35), transparent);
+  }
+  #glance { position: absolute; top: 34px; left: 26px; font-size: 17px; font-weight: 500; line-height: 1.5; color: #e8eaed; }
+  #glance .dim { color: #b0b6c8; }
+  #clock { position: absolute; top: 26%; left: 0; right: 0; text-align: center; }
+  #clock .hhmm { font-size: min(30vw, 150px); font-weight: 700; line-height: 0.95; letter-spacing: -0.02em; color: #8ab4f8; }
+  #clock .date { margin-top: 10px; font-size: 15px; color: #dce1ee; }
+  #lockbottom { position: absolute; bottom: 26px; left: 0; right: 0; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 30px; }
+  #lockbottom .side { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  #fp { text-align: center; color: #e8eaed; }
+  #fp .lock { font-size: 22px; }
+  #fp .hint { margin-top: 10px; font-size: 17px; font-weight: 700; color: #fff; animation: pulse 2s ease-in-out infinite; }
+  #disclaimer { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-size: 11px; color: rgba(255,255,255,0.55); padding: 0 24px; }
+  /* ---------- Material You app ---------- */
+  #app { position: fixed; inset: 0; z-index: 5; background: var(--m3-surface); display: flex; flex-direction: column; color: var(--m3-on-surface); }
+  #app.hidden { display: none; }
+  #apphead {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+  }
+  #apphead .title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  #apphead .dots { display: inline-flex; gap: 3px; font-size: 11px; letter-spacing: 0; }
+  #apphead .dots .on { color: var(--m3-primary); } #apphead .dots .off { color: var(--m3-outline-variant); }
+  #apphead .spacer { flex: 1; }
+  #apphead button {
+    width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--m3-surface-container-high); color: var(--m3-primary);
+    font: inherit; font-size: 12px; font-weight: 700;
+  }
+  #apphead button:active { background: var(--m3-surface-highest); }
+  #applog {
+    flex: 1; overflow-y: auto; margin: 0 16px; padding: 16px;
+    background: var(--m3-surface-low); border-radius: 28px;
+    border: 1px solid var(--m3-outline-variant);
+    font-size: 13.5px; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--m3-on-surface);
+  }
+  #applog .ok { color: var(--m3-ok); font-weight: 600; }
+  #applog .err { color: var(--m3-error); font-weight: 600; }
+  #applog .hint { color: var(--m3-hint); }
+  #applog .dim { color: var(--m3-on-surface-variant); }
+  #pillbar {
+    margin: 0; padding: 10px 0 8px; text-align: center;
+    background: transparent; touch-action: none;
+  }
+  #pillbar.armed { animation: none; }
+  #pillbar.armed #pilllabel {
+    display: inline-block; background: #323232; color: #fff;
+    font-size: 14px;
+    border-radius: 24px; padding: 12px 22px;
+    animation: toastin 0.25s ease-out;
+  }
+  #pillbar.armed.focus #pilllabel { color: #fff; }
+  @keyframes toastin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  #pilllabel::first-letter, #fp .hint::first-letter { text-transform: uppercase; }
+  @keyframes appPop {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  #pillbar { position: relative; z-index: 2; }
+  #pillbar.armed.focus ~ #focusdim { display: block; }
+  #pullcircle {
+    display: none; width: 104px; height: 104px; margin: 4px auto 10px; border-radius: 50%;
+    background: var(--m3-primary-container); color: var(--m3-on-primary-container);
+    align-items: center; justify-content: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    animation: circlebreathe 2.4s ease-in-out infinite;
+  }
+  @keyframes circlebreathe {
+    0%,100% { box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 0 0 rgba(208, 188, 255, 0.3); transform: translateY(3px); }
+    50% { box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 0 14px rgba(208, 188, 255, 0); transform: translateY(-3px); }
+  }
+  #pill { width: 130px; height: 5px; border-radius: 3px; background: var(--m3-outline-variant); margin: 0 auto 6px; }
+  #pillbar.armed.focus #pill { background: var(--m3-primary); }
+
+  /* M3 system pass: focus, targets, motion, adaptive */
+  button, [tabindex] { -webkit-tap-highlight-color: transparent; }
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--m3-primary); outline-offset: 2px; border-radius: 8px; }
+  #apphead button { width: 48px; height: 48px; }
+  #busybar { height: 4px; margin: 0 16px; border-radius: 2px; overflow: hidden; background: var(--m3-surface-container-high); }
+  #busybar[hidden] { display: none; }
+  #busybar::after {
+    content: ""; display: block; height: 100%; width: 40%;
+    background: var(--m3-primary); border-radius: 2px;
+    animation: indeterminate 1.2s ease-in-out infinite;
+  }
+  @keyframes indeterminate { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+  .vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  @keyframes appPop {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  #pillbar { position: relative; z-index: 2; }
+  #pillbar.armed.focus ~ #focusdim { display: block; }
+  #pullcircle {
+    display: none; width: 104px; height: 104px; margin: 4px auto 10px; border-radius: 50%;
+    background: var(--m3-primary-container); color: var(--m3-on-primary-container);
+    align-items: center; justify-content: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    animation: circlebreathe 2.4s ease-in-out infinite;
+  }
+  #pillbar.armed.focus.ready #pullcircle { display: flex; }
+  @keyframes circlebreathe {
+    0%,100% { box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 0 0 rgba(208, 188, 255, 0.3); transform: translateY(3px); }
+    50% { box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 0 14px rgba(208, 188, 255, 0); transform: translateY(-3px); }
+  }
+  #pilllabel { font-size: 13px; font-weight: 500; color: var(--m3-on-surface-variant); margin-bottom: 10px; min-height: 17px; font-family: inherit; }
+  #pill { width: 130px; height: 5px; border-radius: 3px; background: var(--m3-outline-variant); margin: 0 auto 6px; }
+  #pillbar.armed.focus #pill { background: var(--m3-primary); }
+
+  /* M3 system pass: focus, targets, motion, adaptive */
+  button, [tabindex] { -webkit-tap-highlight-color: transparent; }
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--m3-primary); outline-offset: 2px; border-radius: 8px; }
+  #apphead button { width: 48px; height: 48px; }
+  #busybar { height: 4px; margin: 0 16px; border-radius: 2px; overflow: hidden; background: var(--m3-surface-container-high); }
+  #busybar[hidden] { display: none; }
+  #busybar::after {
+    content: ""; display: block; height: 100%; width: 40%;
+    background: var(--m3-primary); border-radius: 2px;
+    animation: indeterminate 1.2s ease-in-out infinite;
+  }
+  @keyframes indeterminate { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+  .vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  /* status bars: 24px, Roboto clock left / carrier left, real-vector icons + measured battery */
+  .sig { width: 14px; height: 14px; color: currentColor; }
+  .wifi { width: 18px; height: 13px; filter: brightness(0) invert(1); }
+  .batt { width: auto; height: 12px; }
+  img.bic { display: block; }
+  img.bic.batt { height: 14px; width: auto; }
+  #statusbar, #lockstatus {
+    display: flex; align-items: center; height: 24px; padding: 0 12px; flex: none;
+    font-size: 14px;
+  }
+  #statusbar .icons, #lockstatus .icons { color: #fff; }
+  #statusbar { color: #fff; }
+  #lockstatus { position: absolute; top: 0; left: 0; right: 0; z-index: 2; color: #fff; }
+  #statusbar .spacer, #lockstatus .spacer { flex: 1; }
+  #statusbar .sb-time { font-family: Roboto, sans-serif; font-weight: 500; font-size: 14px; white-space: nowrap; }
+  .icons { display: inline-flex; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+
+<div id="lock" tabindex="0" role="button" aria-label="Unlock. Press Enter to start permissive boot.">
+  <div id="lockstatus"><span class="spacer"></span><span class="icons"><img class="bic" src="icons/wifi_signal.svg" alt="WiFi"><img class="bic batt" src="icons/battery_full_white.svg" alt="Battery"></span></div>
+  <p class="vh">Press Enter to start.</p>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div id="glance"><span id="w1">Sat, Oct 10</span></div>
+  <div id="clock">
+    <div class="hhmm"><span id="hh">22</span><br><span id="mm">32</span></div>
+    <div class="date" id="dateline">Tue, May 20 • 12°C</div>
+  </div>
+  <div id="lockbottom">
+    <div class="side"><span class="ms">home</span></div>
+    <div id="fp"><div class="lock"><span class="ms" style="font-size:26px">lock</span></div><div class="hint">swipe up to jailbreak</div></div>
+    <div class="side"><span class="ms">arrow_back</span></div>
+  </div>
+  <div id="disclaimer">May break your device. Use at your own risk.</div>
+</div>
+
+<div id="app" class="hidden">
+  <div id="statusbar"><span class="sb-time">22:32</span><span class="spacer"></span><span class="icons"><img class="bic" src="icons/wifi_signal.svg" alt="WiFi"><img class="bic batt" src="icons/battery_full_white.svg" alt="Battery"></span></div>
+  <div id="apphead">
+    <span class="dots" aria-hidden="true"><span id="d1" class="off">●</span> <span id="d2" class="off">●</span> <span id="d3" class="off">●</span></span>
+    <span class="title">QualcommPermissive</span>
+    <span class="spacer"></span>
+  </div>
+  <div id="busybar" role="progressbar" aria-label="Working" hidden></div>
+  <div id="applog" role="log" aria-label="Run log" aria-live="polite"></div>
+  <div id="pillbar">
+    <div id="pullcircle"><span class="ms" style="font-size:36px">arrow_upward</span></div>
+    <div id="pilllabel"></div>
+    <div id="pill"></div>
+  </div>
+  <div id="focusdim"></div>
+</div>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
