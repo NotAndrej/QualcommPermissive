@@ -69,7 +69,6 @@ python3 -m http.server 8000
   dependency change: `npm install && npm run build` (needs Node + esbuild;
   `src/main.js` is the entrypoint, names must stay unmangled).
 - `icons/` — status-bar icon masters. `LICENSE` — AGPL-3.0 text.
-- `icons/` — status-bar icon masters. `LICENSE` — AGPL-3.0 text.
 
 ## Disclaimer
 
